@@ -59,7 +59,7 @@ export class AccessService {
       .eq('name', name)
       .single();
     
-    if (error) return null;
+    if (error && error.code !== 'PGRST116') return null;
     return data;
   }
 
@@ -184,11 +184,27 @@ export class AccessService {
     
     // Se não existe, criar novo cliente
     if (!client) {
-      client = await this.createClient({
-        name: clientName,
-        email: `${clientName.toLowerCase().replace(/\s+/g, '')}@cliente.com`,
-        phone: '00000000000'
-      });
+      try {
+        // Gerar email único para evitar conflitos
+        const timestamp = Date.now();
+        const uniqueEmail = `${clientName.toLowerCase().replace(/\s+/g, '')}_${timestamp}@cliente.com`;
+        
+        client = await this.createClient({
+          name: clientName,
+          email: uniqueEmail,
+          phone: '00000000000'
+        });
+      } catch (error: any) {
+        // Se erro de email duplicado, tentar buscar novamente
+        if (error.code === '23505' || error.message?.includes('duplicate key')) {
+          client = await this.getClientByName(clientName);
+          if (!client) {
+            throw new Error('Erro ao criar cliente: email duplicado e cliente não encontrado');
+          }
+        } else {
+          throw error;
+        }
+      }
     }
 
     // Gerar código aleatório no formato FF2030
