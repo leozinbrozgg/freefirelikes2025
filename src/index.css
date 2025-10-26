@@ -31,7 +31,7 @@
     --muted-foreground: 215 20% 65%;
 
     /* Gaming Accent */
-    --accent: 260 100% 70%;
+    --accent: 200 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -82,7 +82,7 @@
     --secondary-foreground: 0 0% 100%;
     --muted: 220 15% 12%;
     --muted-foreground: 215 20% 65%;
-    --accent: 260 100% 70%;
+    --accent: 200 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;

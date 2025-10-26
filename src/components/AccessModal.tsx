@@ -30,16 +30,24 @@ export const AccessModal = ({ isOpen, onAccessGranted }: AccessModalProps) => {
         'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       localStorage.setItem('ff-device-id', deviceId);
 
-      // Verifica se o código é válido usando o Supabase
-      const isValid = await AccessService.isCodeValid(codeToCheck);
+      // Descobre o IP público do usuário (para validação/bind)
+      let ipAddress: string | undefined = undefined;
+      try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipJson = await ipRes.json();
+        ipAddress = ipJson?.ip;
+      } catch {}
+
+      // Verifica se o código é válido usando o Supabase (com verificação de IP)
+      const isValid = await AccessService.isCodeValid(codeToCheck, ipAddress);
       if (!isValid) {
         setError('Código inválido ou expirado. Verifique e tente novamente.');
         setIsLoading(false);
         return;
       }
 
-      // Marca o código como usado no Supabase
-      const marked = await AccessService.markCodeAsUsed(codeToCheck, deviceId);
+      // Marca o código como usado no Supabase (vincula IP no primeiro uso)
+      const marked = await AccessService.markCodeAsUsed(codeToCheck, deviceId, ipAddress);
 
       if (marked) {
         // Salva o acesso no localStorage

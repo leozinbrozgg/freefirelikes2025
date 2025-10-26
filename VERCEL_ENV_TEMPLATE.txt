@@ -1,0 +1,25 @@
+# Copie estas linhas e cole em Vercel > Project Settings > Environment Variables
+# IMPORTANTE: Preencha os valores reais em vez dos <PLACEHOLDERs>.
+# Não suba este arquivo com valores reais para o repositório público.
+
+# Backend (Serverless) - Provedor de Likes
+LIKES_API_URL=<https://kryptorweb.com.br/api/likes>
+LIKES_API_KEY=<slaboy>
+
+# Backend (Serverless) - Informações do Jogador
+PLAYER_API_URL=<https://kryptorweb.com.br/api/player>
+PLAYER_API_KEY=<slaboy
+
+# Supabase (Frontend)
+VITE_SUPABASE_URL=<https://pqeydpgqmkwprjnxgklj.supabase.co
+VITE_SUPABASE_ANON_KEY=<eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxZXlkcGdxbWt3cHJqbnhna2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NjMzMTksImV4cCI6MjA3NDAzOTMxOX0.d8v273r_iO-ZU4E4Mn8L-BPBibvTM3V9Ie0vbMmuHSM
+
+# Plano de fundo semanal (opcional)
+VITE_WEEKLY_BG_PAGE=<URL_DA_PAGINA_ORIGEM_DA_IMAGEM_OPCIONAL>
+VITE_FALLBACK_BG_URL=<URL_DA_IMAGEM_FALLBACK_OPCIONAL>
+
+# Observações
+# - LIKES_API_KEY e PLAYER_API_KEY são sensíveis (NÃO EXPOR PUBLICAMENTE).
+# - Variáveis iniciadas com VITE_ são lidas no frontend; mesmo assim, defina no painel da Vercel (não commitar valores reais).
+# - PLAYER_API_KEY pode ser omitida se for igual à LIKES_API_KEY.
+# - Depois de configurar, faça um redeploy no Vercel.

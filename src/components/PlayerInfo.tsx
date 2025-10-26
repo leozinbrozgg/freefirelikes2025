@@ -8,6 +8,8 @@ interface PlayerInfoProps {
 }
 
 export const PlayerInfo = ({ playerData }: PlayerInfoProps) => {
+  const realLikesSent = playerData.Likes_Depois - playerData.Likes_Antes;
+
   return (
     <Card className="gradient-card border-border/50 shadow-card backdrop-blur-sm">
       <CardHeader className="text-center space-y-4">
@@ -59,7 +61,7 @@ export const PlayerInfo = ({ playerData }: PlayerInfoProps) => {
             
             <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-accent mb-1">
-                +{playerData.Likes_Enviados.toLocaleString()}
+                +{realLikesSent.toLocaleString()}
               </div>
               <div className="text-sm text-muted-foreground">Likes Enviados</div>
             </div>
@@ -115,7 +117,7 @@ export const PlayerInfo = ({ playerData }: PlayerInfoProps) => {
               <span className="font-semibold text-green-700">Operação Concluída!</span>
             </div>
             <p className="text-sm text-green-600">
-              {playerData.Likes_Enviados} likes foram enviados com sucesso para {playerData.PlayerNickname}!
+              {realLikesSent} likes foram enviados com sucesso para {playerData.PlayerNickname}!
             </p>
           </div>
         )}

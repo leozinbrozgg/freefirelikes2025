@@ -14,6 +14,7 @@ export const PlayerModal = ({ playerData, isOpen, onClose }: PlayerModalProps) =
   if (!playerData) return null;
 
   const isLimitReached = playerData.Likes_Antes === playerData.Likes_Depois;
+  const realLikesSent = playerData.Likes_Depois - playerData.Likes_Antes;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -63,7 +64,7 @@ export const PlayerModal = ({ playerData, isOpen, onClose }: PlayerModalProps) =
                 
                 <div className="text-center">
                   <div className="text-lg font-bold text-accent">
-                    +{playerData.Likes_Enviados.toLocaleString()}
+                    +{realLikesSent.toLocaleString()}
                   </div>
                   <div className="text-xs text-muted-foreground">Enviados</div>
                 </div>
@@ -114,7 +115,7 @@ export const PlayerModal = ({ playerData, isOpen, onClose }: PlayerModalProps) =
                 <span className="font-semibold text-green-700 text-sm">Operação Concluída!</span>
               </div>
               <p className="text-xs text-green-600 mt-1">
-                {playerData.Likes_Enviados} likes enviados com sucesso!
+                {realLikesSent} likes enviados com sucesso!
               </p>
             </div>
           )}

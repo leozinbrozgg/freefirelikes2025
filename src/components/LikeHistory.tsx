@@ -26,7 +26,7 @@ export const LikeHistory = () => {
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Histórico de Likes
+            Total Likes Geral
           </h2>
           <div className="text-sm text-muted-foreground ml-7">
             Carregando...
@@ -46,7 +46,7 @@ export const LikeHistory = () => {
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Histórico de Likes
+            Total Likes Geral
           </h2>
           <div className="text-sm text-muted-foreground ml-7">
             Erro
@@ -66,7 +66,7 @@ export const LikeHistory = () => {
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Histórico de Likes
+            Total Likes Geral
           </h2>
           <div className="text-sm text-muted-foreground ml-7">
             Total: <span className="font-bold text-primary">+0</span> likes enviados
@@ -86,7 +86,7 @@ export const LikeHistory = () => {
       <div className="space-y-1">
         <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
           <TrendingUp className="h-5 w-5" />
-          Histórico de Likes
+          Total Likes Geral
         </h2>
         <div className="text-sm text-muted-foreground ml-7">
           Total: <span className="font-bold text-primary">+{totalLikesSent.toLocaleString()}</span> likes enviados
@@ -95,7 +95,16 @@ export const LikeHistory = () => {
 
       {/* Cards individuais em grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {history.map((entry) => (
+        {history.map((entry) => {
+          const e = entry as unknown as {
+            player_nickname?: string;
+            likes_antes?: number;
+            likes_depois?: number;
+            likes_enviados?: number;
+            created_at: string;
+            success: boolean;
+          };
+          return (
           <div
             key={entry.id}
             className="gradient-card border-border/50 shadow-card backdrop-blur-sm rounded-lg p-3 hover:shadow-glow transition-gaming"
@@ -103,16 +112,16 @@ export const LikeHistory = () => {
             {/* Cabeçalho com status e nick */}
             <div className="mb-3">
               <div className="flex items-center gap-2">
-                {entry.success ? (
+                {e.success ? (
                   <CheckCircle className="h-4 w-4 text-primary" />
                 ) : (
                   <XCircle className="h-4 w-4 text-destructive" />
                 )}
                 <span className="font-medium text-card-foreground text-sm">
-                  {entry.player_nickname}†
+                  {e.player_nickname}†
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {formatDate(entry.created_at)}
+                  {formatDate(e.created_at)}
                 </span>
               </div>
             </div>
@@ -121,27 +130,27 @@ export const LikeHistory = () => {
             <div className="grid grid-cols-3 gap-2">
               <div className="text-center">
                 <div className="font-bold text-primary" style={{ fontSize: '1.5rem' }}>
-                  {entry.likes_antes.toLocaleString()}
+                  {e.likes_antes?.toLocaleString?.() || 0}
                 </div>
                 <div className="text-xs text-muted-foreground">Antes</div>
               </div>
               
               <div className="text-center">
                 <div className="font-bold text-secondary" style={{ fontSize: '1.5rem' }}>
-                  {entry.likes_depois.toLocaleString()}
+                  {e.likes_depois?.toLocaleString?.() || 0}
                 </div>
                 <div className="text-xs text-muted-foreground">Depois</div>
               </div>
               
               <div className="text-center">
                 <div className="font-bold text-accent" style={{ fontSize: '1.5rem' }}>
-                  +{entry.likes_enviados.toLocaleString()}
+                  +{e.likes_enviados?.toLocaleString?.() || 0}
                 </div>
                 <div className="text-xs text-muted-foreground">Enviados</div>
               </div>
             </div>
           </div>
-        ))}
+        )})}
       </div>
     </div>
   );

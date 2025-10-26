@@ -7,6 +7,9 @@ interface AccessContextType {
   grantAccess: () => void;
   revokeAccess: () => void;
   isLoading: boolean;
+  clientName?: string;
+  expiresAt?: string;
+  clientId?: string;
 }
 
 const AccessContext = createContext<AccessContextType | undefined>(undefined);
@@ -18,6 +21,9 @@ interface AccessProviderProps {
 export const AccessProvider = ({ children }: AccessProviderProps) => {
   const [hasAccess, setHasAccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [clientName, setClientName] = useState<string>();
+  const [expiresAt, setExpiresAt] = useState<string>();
+  const [clientId, setClientId] = useState<string>();
 
   useEffect(() => {
     // Verifica se o usuário já tem acesso
@@ -29,7 +35,14 @@ export const AccessProvider = ({ children }: AccessProviderProps) => {
           // Verifica se o código ainda é válido no Supabase (mesmo se já foi usado)
           const isStillValid = await AccessService.isCodeStillValid(usedCode);
           if (isStillValid) {
-            setHasAccess(true);
+            // Busca informações do código para obter nome do cliente e data de expiração
+            const accessCode = await AccessService.getAccessCodeByCode(usedCode);
+            if (accessCode) {
+              setHasAccess(true);
+              setClientName(accessCode.clients?.name);
+              setExpiresAt(accessCode.expires_at);
+              setClientId(accessCode.client_id);
+            }
           } else {
             // Código expirado, limpa o localStorage
             localStorage.removeItem('ff-access-granted');
@@ -38,11 +51,17 @@ export const AccessProvider = ({ children }: AccessProviderProps) => {
             localStorage.removeItem('ff-device-id');
             sessionStorage.removeItem('ff-code-used');
             sessionStorage.removeItem('ff-device-id');
+            setClientName(undefined);
+            setExpiresAt(undefined);
+            setClientId(undefined);
           }
         } catch (error) {
           console.error('Erro ao verificar acesso:', error);
           // Em caso de erro, assume que não tem acesso
           setHasAccess(false);
+          setClientName(undefined);
+          setExpiresAt(undefined);
+          setClientId(undefined);
         }
       }
       
@@ -52,12 +71,29 @@ export const AccessProvider = ({ children }: AccessProviderProps) => {
     checkAccess();
   }, []);
 
-  const grantAccess = () => {
+  const grantAccess = async () => {
     setHasAccess(true);
+    // Busca informações do código usado para obter nome do cliente e data de expiração
+    const usedCode = localStorage.getItem('ff-used-code');
+    if (usedCode) {
+      try {
+        const accessCode = await AccessService.getAccessCodeByCode(usedCode);
+        if (accessCode) {
+          setClientName(accessCode.clients?.name);
+          setExpiresAt(accessCode.expires_at);
+          setClientId(accessCode.client_id);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar informações do código:', error);
+      }
+    }
   };
 
   const revokeAccess = () => {
     setHasAccess(false);
+    setClientName(undefined);
+    setExpiresAt(undefined);
+    setClientId(undefined);
     localStorage.removeItem('ff-access-granted');
     localStorage.removeItem('ff-access-time');
     localStorage.removeItem('ff-used-code');
@@ -67,7 +103,7 @@ export const AccessProvider = ({ children }: AccessProviderProps) => {
   };
 
   return (
-    <AccessContext.Provider value={{ hasAccess, grantAccess, revokeAccess, isLoading }}>
+    <AccessContext.Provider value={{ hasAccess, grantAccess, revokeAccess, isLoading, clientName, expiresAt, clientId }}>
       {children}
     </AccessContext.Provider>
   );
