@@ -172,7 +172,9 @@ export class AccessService {
     if (accessCode.expires_at) {
       const now = new Date();
       const expiresAt = new Date(accessCode.expires_at);
-      if (now > expiresAt) return false;
+      // Tolerância para diferenças de relógio do dispositivo (5 minutos)
+      const GRACE_MS = 5 * 60 * 1000;
+      if (now.getTime() > (expiresAt.getTime() + GRACE_MS)) return false;
     }
     const shouldEnforce = !!(accessCode.allowed_ip && accessCode.allowed_ip.trim() !== '') || !!accessCode.enforce_ip;
     if (shouldEnforce) {
@@ -199,7 +201,9 @@ export class AccessService {
     if (accessCode.expires_at) {
       const now = new Date();
       const expiresAt = new Date(accessCode.expires_at);
-      if (now > expiresAt) return false;
+      // Tolerância para diferenças de relógio do dispositivo (5 minutos)
+      const GRACE_MS = 5 * 60 * 1000;
+      if (now.getTime() > (expiresAt.getTime() + GRACE_MS)) return false;
     }
     
     return true;
@@ -282,6 +286,8 @@ export class AccessService {
     const code = this.generateRandomCode();
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + days);
+    // Define expiração para o final do dia local (23:59:59.999)
+    expiresAt.setHours(23, 59, 59, 999);
     
     const newCode: Partial<AccessCode> & { code: string; client_id: string; type: string; hours: number; price: number; used: boolean; expires_at: string } = {
       code: code,

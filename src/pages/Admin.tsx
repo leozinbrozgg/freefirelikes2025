@@ -142,6 +142,8 @@ const Admin = () => {
         // Atualizar código existente
         const expiresAt = new Date();
         expiresAt.setDate(expiresAt.getDate() + formData.days);
+        // Define expiração para o final do dia local (23:59:59.999)
+        expiresAt.setHours(23, 59, 59, 999);
         
         // Atualizar cliente se o nome mudou
         if (editingCode.clients?.name !== formData.clientName) {
